@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSL Failure Analysis System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="{{ url_for('static', filename='jsl_logo.png') }}" alt="JSL Logo" class="logo">
+                <span class="brand-text">JSL Analysis</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Analysis</a>
+                <a href="#" class="nav-link">Reports</a>
+                <a href="#" class="nav-link">Contact</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <div class="prediction-header">
+                        <h1>Category Failure Prediction</h1>
+                        <p class="hero-subtitle">Identifying the Most Likely Category to Fail First</p>
+                    </div>
+                    
+                    <div class="requester-section">
+                        <div class="requester-card">
+                            <div class="requester-header">
+                                <i class="fas fa-user-tie"></i>
+                                <h3>Requester Information</h3>
+                            </div>
+                            <div class="requester-content">
+                                <p class="requester-label">Please enter your name to begin the analysis</p>
+                                <div class="requester-input-wrapper">
+                                    <input type="text" id="requester_name" name="requester_name" 
+                                           class="requester-input large-input" placeholder="Enter your name" required
+                                           pattern="[A-Za-z\s]+" title="Please enter a valid name">
+                                    <i class="fas fa-check-circle valid-icon"></i>
+                                    <i class="fas fa-exclamation-circle invalid-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Monitoring</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-database"></i>
+                            <span class="stat-number">1000+</span>
+                            <span class="stat-label">Analyses</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analysis Form Section -->
+            <section class="analysis-section">
+                <div class="section-header">
+                    <h2>Start Your Analysis</h2>
+                    <p>Enter your search query to analyze potential failure patterns</p>
+                </div>
+                
+                <div class="form-container">
+                    <form action="/predict" method="post" class="analysis-form">
+                        <div class="form-group">
+                            <label for="search_query" class="form-label">
+                                <i class="fas fa-search"></i>
+                                Search Query
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="search_query" name="search_query" 
+                                       class="form-input" placeholder="Enter search terms" required>
+                                <i class="fas fa-check-circle valid-icon"></i>
+                                <i class="fas fa-exclamation-circle invalid-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="submit-button large-button">
+                                <span>Start Analysis</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Input validation
+            const inputs = document.querySelectorAll('.form-input, .requester-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const wrapper = this.parentElement;
+                    const value = this.value;
+                    const isValid = this.id === 'requester_name' 
+                        ? /^[A-Za-z\s]+$/.test(value) 
+                        : value.length > 0;
+                    
+                    wrapper.classList.toggle('valid', isValid && value.length > 0);
+                    wrapper.classList.toggle('invalid', !isValid && value.length > 0);
+                });
+
+                // Focus effects
+                input.addEventListener('focus', function() {
+                    this.parentElement.parentElement.classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    this.parentElement.parentElement.classList.remove('focused');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

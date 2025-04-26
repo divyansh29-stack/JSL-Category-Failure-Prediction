@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure Analysis Report - JSL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="result-page">
+    <div class="container">
+        <div class="content">
+            <div class="header-section">
+                <img src="{{ url_for('static', filename='jsl_logo.png') }}" class="logo" alt="JSL Logo">
+                <h1>Failure Analysis Report</h1>
+                <div class="report-date">{{ current_date }}</div>
+            </div>
+
+            <div class="analysis-summary">
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h2>Key Findings</h2>
+                    </div>
+                    <div class="summary-content">
+                        <div class="finding-item">
+                            <span class="finding-label">Requester</span>
+                            <span class="finding-value">{{ prediction['Requester'] }}</span>
+                        </div>
+                        <div class="finding-item highlight">
+                            <span class="finding-label">Critical Failure Point</span>
+                            <span class="finding-value">{{ prediction['Most Likely to Fail First'] }}</span>
+                        </div>
+                        <div class="finding-item">
+                            <span class="finding-label">Total Failure Incidents</span>
+                            <span class="finding-value">{{ prediction['Number of Complaints'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if prediction['Complaint Counts'] %}
+            <div class="detailed-analysis">
+                <div class="analysis-card">
+                    <div class="analysis-header">
+                        <h2>Category-wise Failure Distribution</h2>
+                    </div>
+                    <div class="analysis-content">
+                        <div class="chart-container">
+                            <table class="analysis-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Failure Count</th>
+                                        <th>Risk Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category, count in prediction['Complaint Counts'].items() %}
+                                    <tr data-risk="{% if count == prediction['Number of Complaints'] %}critical{% elif count > prediction['Number of Complaints']/2 %}high{% else %}medium{% endif %}">
+                                        <td>{{ category }}</td>
+                                        <td>{{ count }}</td>
+                                        <td class="risk-cell" data-risk="{% if count == prediction['Number of Complaints'] %}critical{% elif count > prediction['Number of Complaints']/2 %}high{% else %}medium{% endif %}">
+                                            {% if count == prediction['Number of Complaints'] %}
+                                            <span class="risk-indicator risk-critical">Critical</span>
+                                            {% elif count > prediction['Number of Complaints']/2 %}
+                                            <span class="risk-indicator risk-high">High</span>
+                                            {% else %}
+                                            <span class="risk-indicator risk-medium">Medium</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendations">
+                    <div class="recommendations-header">
+                        <h2>Recommendations</h2>
+                    </div>
+                    <div class="recommendations-content">
+                        <ul>
+                            <li>Immediate attention required for <strong>{{ prediction['Most Likely to Fail First'] }}</strong> category</li>
+                            <li>Implement preventive maintenance schedule for high-risk categories</li>
+                            <li>Review quality control processes for identified failure points</li>
+                            <li>Consider material or process improvements for critical components</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="action-buttons">
+                <a href="{{ url_for('index') }}" class="btn-back">New Analysis</a>
+                <button class="btn-print" onclick="window.print()">Print Report</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
